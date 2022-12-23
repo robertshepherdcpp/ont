@@ -83,7 +83,7 @@ brace {
 var x = 42;
 brace }
 ```
-so the generated would be:
+so the generated would be:                                                                                                               COMPILES: TRUE
 ```C++
 auto main()
 {
