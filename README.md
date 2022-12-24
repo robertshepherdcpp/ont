@@ -42,7 +42,7 @@ funcdefmore a_function(first: int, second: auto)
 brace {
 brace }
 ```
-and the generated code will be:                                                                                              COMPILES: FALSE
+and the generated code will be:                                                                                              COMPILES: TRUE
 ```C++
 auto a_function(int first, auto) second)
 {
