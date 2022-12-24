@@ -122,6 +122,10 @@ auto is_keyword(std::string s)
 	{
 		return true;
 	}
+	if (s == "type_arg")
+	{
+		return true;
+	}
 	else
 	{
 		// FIXME: Add more key words and then the base case for something that isn't a keyword
@@ -148,6 +152,17 @@ auto has(std::string str_, first)
 	else
 	{
 		return false;
+	}
+}
+
+template<char c>
+auto has(std::string str_)
+{
+	for (auto _ : str_)
+	{
+		if (_ == c)
+			return true;
+
 	}
 }
 
@@ -182,6 +197,94 @@ auto amount_str(char c, int num)
 	{
 		s_ += std::to_string(c);
 	}
+}
+
+auto get_str_var(std::string var_expr)
+{
+	// So the user will pass in something like this variable_name: type, 
+	std::string my_var_expr{var_expr};
+	std::string final{};
+	std::string name{};
+	std::string type{};
+	bool second_time = false;
+	int index_for_last_name{};
+	bool last_var_reached = false;
+	while (last_var_reached == false)
+	{
+		for (int i = 0; i < my_var_expr.size(); i++)
+		{
+			if (my_var_expr[i] == ':')
+			{
+				index_for_last_name = i;
+				break;
+			}
+			else if (my_var_expr[i] == ')')
+			{
+				index_for_last_name = i;
+				last_var_reached = true;
+				break;
+			}
+		}
+		if (has<':'>(name) == true)
+		{
+			name = my_var_expr.substr(0, index_for_last_name - 1);
+		}
+		else
+		{
+			name = my_var_expr.substr(0, index_for_last_name);
+		}
+		name = my_var_expr.substr(0, index_for_last_name);
+
+		// Change all above my_var_expr to just var_expr
+	
+		// so the name will be variable_name
+		if (second_time == true)
+		{
+			my_var_expr = my_var_expr.substr(index_for_last_name + 2, my_var_expr.size());
+		}
+		else
+		{
+			my_var_expr = my_var_expr.substr(index_for_last_name + 2, my_var_expr.size());
+		}
+		// so now what we have left is the type, ....
+		std::string token{};
+		int last_index_of_type{};
+		for (int i = 0; i < my_var_expr.size(); i++)
+		{
+			if (my_var_expr[i] == ',')
+			{
+				token = ",";
+				last_index_of_type = i;
+				break;
+			}
+			else if (my_var_expr[i] == ')')
+			{
+				token = ")";
+				last_index_of_type = i;
+				break;
+			}
+		}
+		if (has<':'>(type) == true)
+		{
+			type = my_var_expr.substr(1, last_index_of_type);
+		}
+		else
+		{
+			type = my_var_expr.substr(0, last_index_of_type);
+		}
+		type += " ";
+		final += (type + name + token);
+		my_var_expr = my_var_expr.substr(last_index_of_type + 1, my_var_expr.size());
+		if (token == ")")
+		{
+			break;
+		}
+
+		name = {};
+		type = {};
+		second_time = true;
+	}
+	return final;
 }
 
 auto parse(std::string str_)
@@ -353,6 +456,7 @@ auto parse(std::string str_)
 			std::string object_name = bit_after_object;
 			current_string_o += object_name;
 			dotcppfile.push_back(current_string_o);
+			// well there is an error here, we need the semicolon on the end brace
         }
 		else if (possible_keyword == "brace")
 		{
@@ -373,7 +477,16 @@ auto parse(std::string str_)
 			{
 				// else the user has used an invalid key word and will now have to
 				// catch an exception or just abort the program.
-				throw exception{ "You have used the brace keyword in a wrong context" };
+				if (next_expression[0] == '}')
+				{
+					indent -= 4;
+				}
+				else
+				{
+					indent += 4;
+				}
+				dotcppfile.push_back(amount_str(indent) + next_expression);
+				//throw exception{ "You have used the brace keyword in a wrong context" };
 			}
 		} // else if(possible_keyword == "brace"
 		else if (possible_keyword == "output")
@@ -426,7 +539,9 @@ auto parse(std::string str_)
 			std::string parameters = rest_of_function.substr(last_index_of_name + 1, rest_of_function.size() - 1);
 			int last_reached_index = 0;
 
-			while (last_parameter_reached == false)
+			cppfile_waiting += get_str_var(parameters);
+			
+			while (/*last_parameter_reached == */false)
 			{
 				// so now we just have variablename: type, variablename2: type, variablename3: type etc.
 				// we will parse then one by one and then either delegate to another function, or in a while loop
@@ -524,10 +639,11 @@ auto parse(std::string str_)
 		std::string cpp_file_waiting = amount_str(indent);
 		cpp_file_waiting += "using namespace ";
 		std::string namespace_name = str_.substr(6, str_.size());
-		if (namespace_name == "standard")
+		if (namespace_name == "standard" || namespace_name == "standard;")
 		{
-			namespace_name = "std";
+			namespace_name = "std;";
 		}
+		//namespace_name += ";";
 		cpp_file_waiting += namespace_name;
 		if (namespace_name == "std")
 		{
@@ -564,6 +680,23 @@ auto parse(std::string str_)
 			std::string value = rest.substr(index_of_var_name_last, rest.size());
 			to_add_cpp += value;
 			dotcppfile.push_back(to_add_cpp);
+		} // else if(possible_keyword == "vardef")
+		else if (possible_keyword == "type_arg")
+		{
+		std::string to_add_cpp{amount_str(indent)};
+		to_add_cpp += "template";
+		std::string curr{str_.substr(9, str_.size())};
+		if (curr[0] != '<')
+		{
+			throw exception{"Expected a '<' after `type_arg`"};
+		}
+		if (curr[curr.size() - 1] != '>')
+		{
+			throw exception{"Expected a '>' after " + curr.substr(1, curr.size() - 1)};
+		}
+		std::string rest = curr.substr(1, curr.size() - 1);
+		to_add_cpp += ("<" + rest);
+		dotcppfile.push_back(to_add_cpp);
 		}
 	}
 }
@@ -587,7 +720,6 @@ int main()
 
 	get_input();
 
-	/*
 	parse("use ~inputoutput~");
 	parse("use ~str~");
 	parse("use ~vector~");
@@ -621,11 +753,14 @@ int main()
 	parse("function_call function_definition<>!;");
 	parse("brace }");
 	parse("brace }");
-	*/
-	// FIME: outputs an extra bracket when not needed.
-	//parse("funcdefmore function_name(first: bool, second: int)");
-	//parse("brace {");
-	//parse("brace }");
+	parse("funcdefmore function_name(first: bool, second: int)");
+	parse("brace {");
+	parse("brace }");
+	parse("funcdefmore function_name(first: bool, second: int, third: char)");
+	parse("brace {");
+	parse("brace }");
+
+	// parse("funcdefmore function_name(var_int: int, var_char: char)");
 
 	int j = 1;
 	for (auto _ : dotcppfile)
