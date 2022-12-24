@@ -48,7 +48,28 @@ auto a_function(int first, auto) second)
 {
 }
 ```
-Notice that it doesn't work becuase there is an extra bracket there, but that should be resolved shortly. And that is it for functions!
+Notice that it doesn't work becuase there is an extra bracket there, but that should be resolved shortly. And that is it for functions! Now I will tell you how to call functions!
+So the syntax is again quite strange. You start with the `function_call` keyword, notice that every line, if you want it to get parsed by the ont compiler, has to have a keyword starting on it. So after the `function_call` keyword you will need a space, ` `, and then the function name, for instance `a_function`. Then you will need to use the angle brackets, `<>` then followed by a `!`. Notice that at the moment you cannot call a function taking arguements, well you can but I will come back to that, because the parser looks for `<>` with nothing inside of it. So you can call those functions just usein the normal c++ function call syntax: `functionname()` becuase there is no keyword the ont compiler will know to parse so it will just spit out what it was passed in. Here is an example usage:
+
+```
+funcdef function(*: _)
+brace {
+brace }
+funcdef main(*: _)
+brace {
+function_call function<>!;
+brace }
+```
+So, the generated code would be:
+```C++
+auto function()
+{
+}
+int main()
+{
+    function();
+}
+```
 
 ### Namespaces
 
