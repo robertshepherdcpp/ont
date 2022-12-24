@@ -60,7 +60,7 @@ brace {
 function_call function<>!;
 brace }
 ```
-So, the generated code would be:
+So, the generated code would be:                                                                                           COMPILES: TRUE
 ```C++
 auto function()
 {
