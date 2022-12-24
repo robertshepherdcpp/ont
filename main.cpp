@@ -126,13 +126,14 @@ auto is_keyword(std::string s)
 	{
 		return true;
 	}
-	else
+	if (s == "pattern_match")
 	{
+		return true;
+	}
 		// FIXME: Add more key words and then the base case for something that isn't a keyword
 		// like a compiler error message.
 
 		return false;
-	}
 }
 
 struct exception
@@ -697,6 +698,51 @@ auto parse(std::string str_)
 		std::string rest = curr.substr(1, curr.size() - 1);
 		to_add_cpp += ("<" + rest);
 		dotcppfile.push_back(to_add_cpp);
+		} // else if(possible_keyword == "type_arg")
+		else if (possible_keyword == "pattern_match")
+		{
+		std::string rest{};
+		rest += str_.substr(14, str_.size());
+		int last_type_index = 0;
+		for (int i = 0; i < rest.size(); i++)
+		{
+			if (rest[i] == ' ')
+			{
+				last_type_index = i;
+				break;
+			}
+		}
+		std::string typeone = rest.substr(0, last_type_index);
+		std::string typetwo{};
+		rest = rest.substr(last_type_index + 1, rest.size());
+		last_type_index = 0;
+		if (rest[0] == 'i' && rest[1] == 's')
+		{
+			rest = rest.substr(3, rest.size());
+			for (int i = 0; i < rest.size(); i++)
+			{
+				if (rest[i] == ';')
+				{
+					last_type_index = i;
+					break;
+				}
+			}
+			typetwo = rest.substr(0, last_type_index);
+		}
+		std::string string_file_to_add{};
+		string_file_to_add += ("bool " + typeone + "Is" + typetwo + " = " + "std::is_same_v<" + typeone + ", " + typetwo + ">;");
+		dotcppfile.push_back((amount_str(indent) + string_file_to_add));
+		std::vector<std::string> dotcpptwo{ "#include<type_traits>" };
+		for (int i = 0; i < dotcppfile.size() + 1; i++)
+		{
+			dotcpptwo.push_back(" ");
+		}
+		// dotcpptwo += dotcppfile;
+		for (int i = 0; i < dotcppfile.size(); i++)
+		{
+			dotcpptwo[i + 1] = dotcppfile[i];
+		}
+		dotcppfile = dotcpptwo;
 		}
 	}
 }
@@ -719,7 +765,7 @@ int main()
 {
 
 	get_input();
-
+	parse("pattern_match int is double;");
 	parse("use ~inputoutput~");
 	parse("use ~str~");
 	parse("use ~vector~");
