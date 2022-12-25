@@ -134,6 +134,10 @@ auto is_keyword(std::string s)
 	{
 		return true;
 	}
+	if (s == "funcdef_trailing")
+	{
+		return true;
+	}
 		// FIXME: Add more key words and then the base case for something that isn't a keyword
 		// like a compiler error message.
 
@@ -451,6 +455,96 @@ auto parse(std::string str_)
 			}
 			dotcppfile.push_back(current_string_o);
 		} // else if(possible_keyword == "funcdef")
+		else if (possible_keyword == "funcdef_trailing")
+		{
+		std::string waiting{amount_str(indent)};
+		std::string rest = str_.substr(17, str_.size());
+		int first_bracket_index = 0;
+		// so now all we have is the function_name(*: _) -> void
+		int last_function_index = 0;
+		for (int i = 0; i < rest.size(); i++)
+		{
+			if (rest[i] == ')')
+			{
+				last_function_index = i;
+				break;
+			}
+			if (rest[i] == '(')
+			{
+				first_bracket_index = i;
+			}
+		}
+		std::string name = rest.substr(0, first_bracket_index);
+		waiting += ("auto " + name + "(");
+		// name is now function_name.
+		int index_last_bracket = 0;
+		for (int i = 0; i < rest.size(); i++)
+		{
+			if (rest[i] == ')')
+			{
+				index_last_bracket = i;
+				break;
+			}
+		}
+		if ((last_function_index - first_bracket_index) > 4)
+		{
+			// so we have a variable.
+			// we will get the variable by doing rest.substr(first_bracket_index, last_function_index)
+
+			std::string variable{rest.substr(first_bracket_index, last_function_index)};
+			for (int i = 0; i < variable.size(); i++)
+			{
+				if (variable[i] == '-')
+				{
+					// variable = variable.substr(0, static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(i) - 1);
+					variable = variable.substr(0, i - 1);
+					break;
+				}
+			}
+			std::string name{};
+			//std::string type{};
+			// so to get the name we will do a loop looking for ':' and then get a substr out of rest with indexes.
+			int last_index_colon = 0;
+		    for (int i = 0; i < variable.size(); i++)
+			{
+				if (variable[i] == ':')
+				{
+					last_index_colon = i;
+					break;
+				}
+			}
+			name = variable.substr(1, last_index_colon - 1);
+			std::string type = variable.substr(last_index_colon + 2, (variable.size() - 4));
+			std::string type_two{};
+			//for(int i = 0; i < type.size())
+			for (int i = 0; i < type.size(); i++)
+			{
+				if (type[i] != ')')
+				{
+					type_two.push_back(type[i]);
+				}
+			}
+			waiting += (type.substr(0, type.size() - 1) + " " + name + ")");
+			std::string trailing{rest.substr(last_function_index + 1, rest.size())};
+			waiting += trailing;
+		}
+		else
+		{
+			// we have a function taking no parameters.
+			//for (int i = 0; i < rest.size(); i++)
+			//{
+			//	if(rest[i] == '>')
+			//}
+
+			//waiting += ")";
+
+			// we will just append whatever we have left onto the string that is waiting.
+			std::string rest_trailing = rest.substr(index_last_bracket, rest.size());
+			waiting += rest_trailing;
+
+		}
+		dotcppfile.push_back(waiting);
+		} // else if(possible_keyword == "funcdef_trailing")
 		else if (possible_keyword == "object")
 		{
 			std::string current_string_o = amount_str(indent);
@@ -788,7 +882,8 @@ auto get_input()
 int main()
 {
 
-	// get_input();
+	//get_input();
+	parse("funcdef_trailing function_name(a: int) -> float");
 	parse("make_instance int c;");
 	parse("pattern_match int is double;");
 	parse("use ~inputoutput~");
