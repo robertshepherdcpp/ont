@@ -111,7 +111,21 @@ auto main()
     auto x = 42;
 }
 ```
-So, really quite simple isn't it! Also notice that the code it formatted. That is one of the reasons for using `brace {` instead of `{`. Now I will move onto including header files!
+So, really quite simple isn't it! Also notice that the code it formatted. That is one of the reasons for using `brace {` instead of `{`. Now I will move onto including header files! With variables you can also use the new `make_instance` keyword which will automatically default construct, call `type{}`, so that you don't have to worry about the type not being initialized! Here is an example use case:
+```
+funcdef main(*: _)
+brace {
+make_instance int i;
+brace} 
+```
+So the generated code will be:
+```C++
+auto main()
+{
+    int i{};
+}
+```
+This is good because we can forgett about remembering to default construct types using that!
 
 ### Header Files
 
