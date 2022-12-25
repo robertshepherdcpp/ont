@@ -130,6 +130,10 @@ auto is_keyword(std::string s)
 	{
 		return true;
 	}
+	if (s == "make_instance")
+	{
+		return true;
+	}
 		// FIXME: Add more key words and then the base case for something that isn't a keyword
 		// like a compiler error message.
 
@@ -449,7 +453,7 @@ auto parse(std::string str_)
 		} // else if(possible_keyword == "funcdef")
 		else if (possible_keyword == "object")
 		{
-		    std::string current_string_o = amount_str(indent);
+			std::string current_string_o = amount_str(indent);
 			std::string bit_after_object = str_.substr(6, str_.size());
 			// so we know have OBJECTNAME
 			current_string_o += "struct";
@@ -458,7 +462,7 @@ auto parse(std::string str_)
 			current_string_o += object_name;
 			dotcppfile.push_back(current_string_o);
 			// well there is an error here, we need the semicolon on the end brace
-        }
+		}
 		else if (possible_keyword == "brace")
 		{
 			std::string next_expression = str_.substr(6, str_.size()); // substring from j to the end of the string.
@@ -518,7 +522,7 @@ auto parse(std::string str_)
 		} // else if(possible_key_word == "output")
 		else if (possible_keyword == "funcdefmore")
 		{
-		    // we are now parsing multiple parameters use the keyword funcdefmore.
+			// we are now parsing multiple parameters use the keyword funcdefmore.
 			// the syntax will look like this:
 			// funcdefmore function_name(first: int, second: char, third: bool, ...)
 			std::string cppfile_waiting = amount_str(indent);
@@ -541,7 +545,7 @@ auto parse(std::string str_)
 			int last_reached_index = 0;
 
 			cppfile_waiting += get_str_var(parameters);
-			
+
 			while (/*last_parameter_reached == */false)
 			{
 				// so now we just have variablename: type, variablename2: type, variablename3: type etc.
@@ -612,57 +616,57 @@ auto parse(std::string str_)
 		} // else if(possible_keyword == "funcdefmore")
 		else if (possible_keyword == "function_call")
 		{
-		// this is the syntax for a function call:
-		// function_name function_name<parameters>!;
-		std::string cpp_file_waiting = amount_str(indent);
-		std::string rest_of_function_call = str_.substr(14, str_.size());
-		int end_index_function_name = 0;
-		for (int i = 0; i < rest_of_function_call.size(); i++)
-		{
-			if (rest_of_function_call[i] == '<')
+			// this is the syntax for a function call:
+			// function_name function_name<parameters>!;
+			std::string cpp_file_waiting = amount_str(indent);
+			std::string rest_of_function_call = str_.substr(14, str_.size());
+			int end_index_function_name = 0;
+			for (int i = 0; i < rest_of_function_call.size(); i++)
 			{
-				end_index_function_name = i;
-				break;
+				if (rest_of_function_call[i] == '<')
+				{
+					end_index_function_name = i;
+					break;
+				}
 			}
-		}
-		std::string function_name = rest_of_function_call.substr(0, end_index_function_name);
-		cpp_file_waiting += function_name;
-		std::string rest_func = rest_of_function_call.substr(end_index_function_name, rest_of_function_call.size());
-		if (rest_func[0] == '<' && rest_func[1] == '>' && rest_func[2] == '!' && rest_func[3] == ';')
-		{
-			cpp_file_waiting += "();";
-		}
+			std::string function_name = rest_of_function_call.substr(0, end_index_function_name);
+			cpp_file_waiting += function_name;
+			std::string rest_func = rest_of_function_call.substr(end_index_function_name, rest_of_function_call.size());
+			if (rest_func[0] == '<' && rest_func[1] == '>' && rest_func[2] == '!' && rest_func[3] == ';')
+			{
+				cpp_file_waiting += "();";
+			}
 
-		dotcppfile.push_back(cpp_file_waiting);
+			dotcppfile.push_back(cpp_file_waiting);
 		} // else if(possible_keyword == "function_call
 		else if (possible_keyword == "apply")
 		{
-		std::string cpp_file_waiting = amount_str(indent);
-		cpp_file_waiting += "using namespace ";
-		std::string namespace_name = str_.substr(6, str_.size());
-		if (namespace_name == "standard" || namespace_name == "standard;")
-		{
-			namespace_name = "std;";
-		}
-		//namespace_name += ";";
-		cpp_file_waiting += namespace_name;
-		if (namespace_name == "std")
-		{
-			using_namespace_std = true;
-		}
-		dotcppfile.push_back(cpp_file_waiting);
+			std::string cpp_file_waiting = amount_str(indent);
+			cpp_file_waiting += "using namespace ";
+			std::string namespace_name = str_.substr(6, str_.size());
+			if (namespace_name == "standard" || namespace_name == "standard;")
+			{
+				namespace_name = "std;";
+			}
+			//namespace_name += ";";
+			cpp_file_waiting += namespace_name;
+			if (namespace_name == "std")
+			{
+				using_namespace_std = true;
+			}
+			dotcppfile.push_back(cpp_file_waiting);
 		}
 		else if (possible_keyword == "body")
 		{
-		  // a body is a namespace.
-		  std::string namespace_name = str_.substr(5, str_.size());
-		  std::string cpp_waiting = amount_str(indent);
-		  cpp_waiting += ("namespace " + namespace_name);
-		  dotcppfile.push_back(cpp_waiting);
+			// a body is a namespace.
+			std::string namespace_name = str_.substr(5, str_.size());
+			std::string cpp_waiting = amount_str(indent);
+			cpp_waiting += ("namespace " + namespace_name);
+			dotcppfile.push_back(cpp_waiting);
 		}
 		else if (possible_keyword == "vardef")
 		{
-		    // so we are making a variable, it is really simple.
+			// so we are making a variable, it is really simple.
 			std::string to_add_cpp = amount_str(indent);
 			to_add_cpp += "auto ";
 			std::string name_of_var{};
@@ -684,65 +688,85 @@ auto parse(std::string str_)
 		} // else if(possible_keyword == "vardef")
 		else if (possible_keyword == "type_arg")
 		{
-		std::string to_add_cpp{amount_str(indent)};
-		to_add_cpp += "template";
-		std::string curr{str_.substr(9, str_.size())};
-		if (curr[0] != '<')
-		{
-			throw exception{"Expected a '<' after `type_arg`"};
-		}
-		if (curr[curr.size() - 1] != '>')
-		{
-			throw exception{"Expected a '>' after " + curr.substr(1, curr.size() - 1)};
-		}
-		std::string rest = curr.substr(1, curr.size() - 1);
-		to_add_cpp += ("<" + rest);
-		dotcppfile.push_back(to_add_cpp);
+			std::string to_add_cpp{ amount_str(indent) };
+			to_add_cpp += "template";
+			std::string curr{ str_.substr(9, str_.size()) };
+			if (curr[0] != '<')
+			{
+				throw exception{ "Expected a '<' after `type_arg`" };
+			}
+			if (curr[curr.size() - 1] != '>')
+			{
+				throw exception{ "Expected a '>' after " + curr.substr(1, curr.size() - 1) };
+			}
+			std::string rest = curr.substr(1, curr.size() - 1);
+			to_add_cpp += ("<" + rest);
+			dotcppfile.push_back(to_add_cpp);
 		} // else if(possible_keyword == "type_arg")
 		else if (possible_keyword == "pattern_match")
 		{
-		std::string rest{};
-		rest += str_.substr(14, str_.size());
-		int last_type_index = 0;
-		for (int i = 0; i < rest.size(); i++)
-		{
-			if (rest[i] == ' ')
-			{
-				last_type_index = i;
-				break;
-			}
-		}
-		std::string typeone = rest.substr(0, last_type_index);
-		std::string typetwo{};
-		rest = rest.substr(last_type_index + 1, rest.size());
-		last_type_index = 0;
-		if (rest[0] == 'i' && rest[1] == 's')
-		{
-			rest = rest.substr(3, rest.size());
+			std::string rest{};
+			rest += str_.substr(14, str_.size());
+			int last_type_index = 0;
 			for (int i = 0; i < rest.size(); i++)
 			{
-				if (rest[i] == ';')
+				if (rest[i] == ' ')
 				{
 					last_type_index = i;
 					break;
 				}
 			}
-			typetwo = rest.substr(0, last_type_index);
-		}
-		std::string string_file_to_add{};
-		string_file_to_add += ("bool " + typeone + "Is" + typetwo + " = " + "std::is_same_v<" + typeone + ", " + typetwo + ">;");
-		dotcppfile.push_back((amount_str(indent) + string_file_to_add));
-		std::vector<std::string> dotcpptwo{ "#include<type_traits>" };
-		for (int i = 0; i < dotcppfile.size() + 1; i++)
+			std::string typeone = rest.substr(0, last_type_index);
+			std::string typetwo{};
+			rest = rest.substr(last_type_index + 1, rest.size());
+			last_type_index = 0;
+			if (rest[0] == 'i' && rest[1] == 's')
+			{
+				rest = rest.substr(3, rest.size());
+				for (int i = 0; i < rest.size(); i++)
+				{
+					if (rest[i] == ';')
+					{
+						last_type_index = i;
+						break;
+					}
+				}
+				typetwo = rest.substr(0, last_type_index);
+			}
+			std::string string_file_to_add{};
+			string_file_to_add += ("bool " + typeone + "Is" + typetwo + " = " + "std::is_same_v<" + typeone + ", " + typetwo + ">;");
+			dotcppfile.push_back((amount_str(indent) + string_file_to_add));
+			std::vector<std::string> dotcpptwo{ "#include<type_traits>" };
+			for (int i = 0; i < dotcppfile.size() + 1; i++)
+			{
+				dotcpptwo.push_back(" ");
+			}
+			// dotcpptwo += dotcppfile;
+			for (int i = 0; i < dotcppfile.size(); i++)
+			{
+				dotcpptwo[i + 1] = dotcppfile[i];
+			}
+			dotcppfile = dotcpptwo;
+		} // else if(possible_keyword == "pattern_match"
+		else if (possible_keyword == "make_instance")
 		{
-			dotcpptwo.push_back(" ");
-		}
-		// dotcpptwo += dotcppfile;
-		for (int i = 0; i < dotcppfile.size(); i++)
-		{
-			dotcpptwo[i + 1] = dotcppfile[i];
-		}
-		dotcppfile = dotcpptwo;
+			// So with this we want an object that is default constructable, we don't have to call the default constructor it is
+			// already defaulted. So the syntax will look like this:
+			std::string rest = str_.substr(14, str_.size());
+			int index_for_type = 0;
+			for (int i = 0; i < str_.size(); i++)
+			{
+				if (rest[i] == ' ')
+				{
+					index_for_type = i;
+					break;
+				}
+			}
+			std::string type{ rest.substr(0, index_for_type) };
+			rest = rest.substr(index_for_type + 1, rest.size());
+			std::string name{ rest.substr(0, rest.size() - 1) }; // - 1 to remove semicolon.
+			std::string to_add_cpp{ type + " " + name + "{};" };
+			dotcppfile.push_back(to_add_cpp);
 		}
 	}
 }
@@ -764,7 +788,8 @@ auto get_input()
 int main()
 {
 
-	get_input();
+	// get_input();
+	parse("make_instance int c;");
 	parse("pattern_match int is double;");
 	parse("use ~inputoutput~");
 	parse("use ~str~");
