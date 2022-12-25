@@ -379,6 +379,10 @@ auto parse(std::string str_)
 					next_expression = next_expression.substr(IndexOfFindingFunctionName + 6);
 				}
 				current_string_o += ")";
+				if (function_name == "main" || function_name == " main" || function_name == "main ")
+				{
+					current_string_o += " -> int";
+				}
 			}
 			else
 			{
