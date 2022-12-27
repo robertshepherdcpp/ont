@@ -86,59 +86,59 @@ auto is_keyword(std::string s)
 	{
 		return true;
 	}
-	if (s == "funcdef")
+	else if (s == "funcdef")
 	{
 		return true;
 	}
-	if (s == "brace")
+	else if (s == "brace")
 	{
 		return true;
 	}
-	if (s == "output")
+	else if (s == "output")
 	{
 		return true;
 	}
-	if (s == "object")
+	else if (s == "object")
 	{
 		return true;
 	}
-	if (s == "funcdefmore")
+	else if (s == "funcdefmore")
 	{
 		return true;
 	}
-	if (s == "function_call")
+	else if (s == "function_call")
 	{
 		return true;
 	}
-	if (s == "apply")
+	else if (s == "apply")
 	{
 		return true;
 	}
-	if (s == "body")
+	else if (s == "body")
 	{
 		return true;
 	}
-	if (s == "vardef")
+	else if (s == "vardef")
 	{
 		return true;
 	}
-	if (s == "type_arg")
+	else if (s == "type_arg")
 	{
 		return true;
 	}
-	if(s == "vardef_comp")
+	else if(s == "vardef_comp")
 	{
 		return true;
 	}
-	if (s == "pattern_match")
+	else if (s == "pattern_match")
 	{
 		return true;
 	}
-	if (s == "make_instance")
+	else if (s == "make_instance")
 	{
 		return true;
 	}
-	if (s == "funcdef_trailing")
+	else if (s == "funcdef_trailing")
 	{
 		return true;
 	}
