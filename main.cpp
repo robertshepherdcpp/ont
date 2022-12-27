@@ -126,6 +126,10 @@ auto is_keyword(std::string s)
 	{
 		return true;
 	}
+	if(s == "vardef_comp")
+	{
+		return true;
+	}
 	if (s == "pattern_match")
 	{
 		return true;
@@ -351,6 +355,7 @@ auto parse(std::string str_)
 			// so with funcdef we will need to put it before every function definition like this:
 			// funcdef function_name(a: int) -> int
 			std::string current_string_o = amount_str(indent);
+			current_string_o += "[[nodiscard]] ";
 			std::string next_expression = str_.substr(8, str_.size()); // substring from j to the end of the string.
 			current_string_o += "auto ";
 			std::string function_name{};
@@ -462,6 +467,7 @@ auto parse(std::string str_)
 		else if (possible_keyword == "funcdef_trailing")
 		{
 		std::string waiting{amount_str(indent)};
+	        waiting += "[[nodiscard]] ";
 		std::string rest = str_.substr(17, str_.size());
 		int first_bracket_index = 0;
 		// so now all we have is the function_name(*: _) -> void
@@ -624,6 +630,7 @@ auto parse(std::string str_)
 			// the syntax will look like this:
 			// funcdefmore function_name(first: int, second: char, third: bool, ...)
 			std::string cppfile_waiting = amount_str(indent);
+			cppfile_waiting += "[[nodiscard]] ";
 			std::string rest_of_function = str_.substr(11, str_.size());
 			cppfile_waiting += "auto";
 			int last_index_of_name = 0;
@@ -766,6 +773,29 @@ auto parse(std::string str_)
 		{
 			// so we are making a variable, it is really simple.
 			std::string to_add_cpp = amount_str(indent);
+			to_add_cpp += "auto ";
+			std::string name_of_var{};
+			int index_of_var_name_last{};
+			for (int i = 7; i < str_.size(); i++)
+			{
+				if (str_[i] == '{')
+				{
+					index_of_var_name_last = i;
+				}
+			}
+			std::string rest = str_.substr(7, str_.size());
+			index_of_var_name_last -= 7;
+			std::string var_name = rest.substr(0, index_of_var_name_last);
+			to_add_cpp += var_name;
+			std::string value = rest.substr(index_of_var_name_last, rest.size());
+			to_add_cpp += value;
+			dotcppfile.push_back(to_add_cpp);
+		} // else if(possible_keyword == "vardef")
+		else if (possible_keyword == "vardef_comp")
+		{
+			// so we are making a variable, it is really simple.
+			std::string to_add_cpp = amount_str(indent);
+			to_add_cpp += "constexpr ";
 			to_add_cpp += "auto ";
 			std::string name_of_var{};
 			int index_of_var_name_last{};
