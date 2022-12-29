@@ -311,8 +311,21 @@ auto parse(std::string str_)
 		{
 			dotcppfile.push_back("\n");
 		}
+		if(str_ == "}";
+		   {
+		   std::string current_indent = amount_str(indent) - 4;
+		   dotcppfile.push_back(current_indent + str_)
+		}
+		else if(str_ == "{"
+		{
+			std::string current_indent = amount_str(indent);
+			dotcppfile.push_back(current_indent + str_);
+		}
+		else
+		{	
 		std::string current_indent = amount_str(indent);
 		dotcppfile.push_back(current_indent + str_);
+		}
 	}
 	else
 	{
