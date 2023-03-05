@@ -177,6 +177,7 @@ auto has(std::string str_)
 			return true;
 
 	}
+    return false;
 }
 
 template<char c>
@@ -311,12 +312,12 @@ auto parse(std::string str_)
 		{
 			dotcppfile.push_back("\n");
 		}
-		if(str_ == "}";
+		if(str_ == "}")
 		   {
-		   std::string current_indent = amount_str(indent) - 4;
-		   dotcppfile.push_back(current_indent + str_)
+		   std::string current_indent = amount_str(indent - 4);
+		   dotcppfile.push_back(current_indent + str_);
 		}
-		else if(str_ == "{"
+		else if(str_ == "{")
 		{
 			std::string current_indent = amount_str(indent);
 			dotcppfile.push_back(current_indent + str_);
@@ -928,8 +929,6 @@ auto get_input()
 
 int main()
 {
-
-	//get_input();
 	parse("funcdef_trailing function_name(a: int) -> float");
 	parse("make_instance int c;");
 	parse("pattern_match int is double;");
@@ -969,7 +968,7 @@ int main()
 	parse("funcdefmore function_name(first: bool, second: int)");
 	parse("brace {");
 	parse("brace }");
-	parse("funcdefmore function_name(first: bool, second: int, third: char)");
+	parse("funcdefmore function_name(first: bool, second: int, third: char, fourth: bool)");
 	parse("brace {");
 	parse("brace }");
 
