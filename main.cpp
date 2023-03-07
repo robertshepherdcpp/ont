@@ -142,6 +142,10 @@ auto is_keyword(std::string s)
 	{
 		return true;
 	}
+    else if(s == "input")
+    {
+        return true;
+    }
 		// FIXME: Add more key words and then the base case for something that isn't a keyword
 		// like a compiler error message.
 
@@ -910,6 +914,32 @@ auto parse(std::string str_)
 			std::string to_add_cpp{ type + " " + name + "{};" };
 			dotcppfile.push_back(to_add_cpp);
 		}
+        else if(possible_keyword == "input")
+        {
+            std::string next_expression = str_.substr(6, str_.size());
+			if (next_expression.find("->") != -1)
+			{
+				// so we are doing output <- something;
+				for (int i = 0; i < next_expression.size(); i++)
+				{
+					if (next_expression[i] == '-' && next_expression[i + 1] == '>')
+					{
+						std::string current_indent = amount_str(indent);
+						std::string output_thing = next_expression.substr(next_expression.find("->") + 3, next_expression.size());
+						std::string output_s{};
+						if (using_namespace_std)
+						{
+							output_s = "cin ";
+						}
+						else
+						{
+							output_s = "std::cin";
+						}
+						dotcppfile.push_back(current_indent + output_s + " <<" + " " + output_thing);
+					}
+				}
+			}
+        }
 	}
 }
 
@@ -929,7 +959,14 @@ auto get_input()
 
 int main()
 {
-	parse("funcdef_trailing function_name(a: int) -> float");
+    parse("#include<iostream>");
+    parse("int main()");
+    parse("{");
+    parse("output <- \"Hello World\"");
+    parse("int x = 42;");
+    parse("input -> xyz;");
+    parse("}");
+    	parse("funcdef_trailing function_name(a: int) -> float");
 	parse("make_instance int c;");
 	parse("pattern_match int is double;");
 	parse("use ~inputoutput~");
@@ -971,20 +1008,12 @@ int main()
 	parse("funcdefmore function_name(first: bool, second: int, third: char, fourth: bool)");
 	parse("brace {");
 	parse("brace }");
-
 	// parse("funcdefmore function_name(var_int: int, var_char: char)");
 
 	int j = 1;
 	for (auto _ : dotcppfile)
 	{
-		if (j < 10)
-			std::cout << "|" << j << " |    " << _ << "\n";
-
-		else if (j < 100)
-			std::cout << "|" << j << "|    " << _ << "\n";
-		else
-			std::cout << "|" << j << "|   " << _ << "\n";
-		j++;
+        std::cout << _ << "\n";
 
 	}
 }
