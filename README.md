@@ -17,7 +17,7 @@ and the generated code will be:                                                 
 ```C++
 struct a_class
 {
-    a_class() {}
+    a_class() {} // constructor
 }
 ```
 Simple right? Well no, with the braces you have to put the brace keyword before, but I will soon change that so that it is just `}`. We could in fact just use '}' at this current stage but the problem with that is, that the code won't come out formatted, you will have to format it yourself. Also this code is actually incorrect, becuase we need some way of putting a `;` at the end of the last brace for `a_class`.But apart from the braces and the semicolon, it looks fine! The constructor is just the same, because the ont parser doesn't even parse it because there is no key word in that, so it is shipped straight off to the `dotcppfile`! And that it for objects(for the moment, things might be added later on)!
