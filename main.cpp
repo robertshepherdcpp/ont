@@ -142,6 +142,10 @@ auto is_keyword(std::string s)
 	{
 		return true;
 	}
+	else if(s == "comment")
+	{
+		return true;
+	}
     else if(s == "input")
     {
         return true;
@@ -367,6 +371,14 @@ auto parse(std::string str_)
 				}
 			}
 		} // if possible_keyword == "use"
+		else if (possible_keyword == "comment")
+		{
+			std::string current_string_o = amount_str(indent);
+			current_string_o += "//";
+			current_string_o += str_.substr(8, str_.end());
+			dotcppfile.push_back(current_string_o);
+			
+		} // else if possible_keyword == "comment"
 		else if (possible_keyword == "funcdef")
 		{
 			// Needs implementing.
