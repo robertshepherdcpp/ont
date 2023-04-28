@@ -7,7 +7,7 @@ Here is the general syntax:
 ### Objects
 
 With objects, i have chosen to get rid of `class` and `struct` and replace them with `object`. Strictly speaking this is not an object, an object is an instance of this. I would be up for changing the name if there is enough demmand, or you could even make your own pull request! So to make a class in the ont programming language you have to use `object object_name` and then that is it. You cannot have a brace on the same line. So an example definition of one of these objects would be like this:
-```
+```C++
 object a_class
 brace {
 a_class() {} // constructor
@@ -37,7 +37,7 @@ auto a_function()
 }
 ```
 So that is functions taking no arguements done! So now it is time for the arguements taking one or more arguements! So now the syntax is simple, it is just like you would find in other languages like Rust. With parameters being taken in with the following syntax: `variable_name: type`, bear in mind you can pass auto as the type. So the syntax is like as before with the function taking no args for the most part. So you start of with `funcdefmore`, `funcdefmore` not `funcdef`. So then after that you give the function name, for instance `function_name`. Then you have the bracket '(' and then the syntax as shown before `variable_name: type` and then the closing bracket: ')'. Please note that you cannot use `funcdef` and `funcdefmore` interchangibly, but that might change in the future. So an example use of using a functoin with multiple arguements is like this:
-```
+```C++
 funcdefmore a_function(first: int, second: auto)
 brace {
 brace }
@@ -51,7 +51,7 @@ auto a_function(int first, auto) second)
 Notice that it doesn't work becuase there is an extra bracket there, but that should be resolved shortly. And that is it for functions! Now I will tell you how to call functions!
 So the syntax is again quite strange. You start with the `function_call` keyword, notice that every line, if you want it to get parsed by the ont compiler, has to have a keyword starting on it. So after the `function_call` keyword you will need a space, ` `, and then the function name, for instance `a_function`. Then you will need to use the angle brackets, `<>` then followed by a `!`. Notice that at the moment you cannot call a function taking arguements, well you can but I will come back to that, because the parser looks for `<>` with nothing inside of it. So you can call those functions just usein the normal c++ function call syntax: `functionname()` becuase there is no keyword the ont compiler will know to parse so it will just spit out what it was passed in. Here is an example usage:
 
-```
+```C++
 funcdef function(*: _)
 brace {
 brace }
@@ -74,7 +74,7 @@ int main()
 ### Namespaces
 
 So there are two topics in this section, first creating namespaces and second using namespaces. I will cover creating namespaces first. So to create a namespace you have got to use the `body` keyword and then the namespace name. It is really quite simple. So here is an example use case:
-```
+```C++
 body a_namespace
 brace {
 brace }
@@ -87,7 +87,7 @@ namespace a_namespace
 ```
 Really simple isn't it. I didn't think `namespace` was a great name, so I chose body, the reason that I chose body was that a body has lots of features and a `namespace` has a lot of features.
 Now I will move onto using namespaces. To use namespaces you have got to use the `apply` keyword, I chose this name becuase when you use a namespace you apply it to variables. So you do `apply` and then the name of the namespace. Here is an example usage:
-```
+```C++
 apply a_namespace;
 ```
 and the generated code will be:                                                                                                         COMPILES: TRUE
@@ -98,7 +98,7 @@ It is nice isn't it with the simple naming. I will now be moving onto variables.
 
 ### Variables
 With declaring variables in the ont programming language you have to use the keyword `vardef` a bit like you would have to do in JavaScript except the naming is different. In JavaScript it is `var` and in ont it is `vardef`. The syntax is a bit funny, you have to do `vardef` then the name of the variable, then `{` then the value, then the `}`. The reason I made the syntax like this is because one of the core guidlines states that you should prefer braced initialization becuase first of all if you haven't put anything in the brace initializer, the variable will get defailt constructred. So here is an example use case:
-```
+```C++
 funcdef main(*: _)
 brace {
 var x = 42;
@@ -112,7 +112,7 @@ auto main()
 }
 ```
 So, really quite simple isn't it! Also notice that the code it formatted. That is one of the reasons for using `brace {` instead of `{`. Now I will move onto including header files! With variables you can also use the new `make_instance` keyword which will automatically default construct, call `type{}`, so that you don't have to worry about the type not being initialized! Here is an example use case:
-```
+```C++
 funcdef main(*: _)
 brace {
 make_instance int i;
