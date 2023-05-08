@@ -125,7 +125,7 @@ auto main()
     int i{};
 }
 ```
-This is good because we can forgett about remembering to default construct types using that!
+This is good because we can forget about remembering to default construct types using that!
 
 ### Header Files
 
