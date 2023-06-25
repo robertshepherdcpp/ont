@@ -375,7 +375,7 @@ auto parse(std::string str_)
 		{
 			std::string current_string_o = amount_str(indent);
 			current_string_o += "//";
-			current_string_o += str_.substr(8, str_.end());
+			current_string_o += str_.substr(8, str_.size());
 			dotcppfile.push_back(current_string_o);
 			
 		} // else if possible_keyword == "comment"
