@@ -116,7 +116,7 @@ So, really quite simple isn't it! Also notice that the code it formatted. That i
 funcdef main(*: _)
 brace {
 make_instance int i;
-brace} 
+brace } 
 ```
 So the generated code will be:
 ```C++
