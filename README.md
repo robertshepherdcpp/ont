@@ -1,6 +1,7 @@
 # The Ont Programming Language.
 
 The Ont Programming Language is not in itself a programming language. It is a bit like herb sutter's cppfront/cpp2 in that it converts the code into c++ and you then run that c++ code. But herb sutter's cppfront is a much more high level language, and he is trying to make c++ 10X safer, this repository is just a different kind of syntax to c++. With it you enter your line of code and then pass it to the `parse` function, which then turns that line of code into c++ code, you will then have to compile that code given to you in the form of a `std::vector<std::string>` called `dotcppfile`.
+Try it on [godbolt](https://godbolt.org/z/Knrs43nY1).
 
 Here is the general syntax:
 
