@@ -947,7 +947,7 @@ auto parse(std::string str_)
 						{
 							output_s = "std::cin";
 						}
-						dotcppfile.push_back(current_indent + output_s + " <<" + " " + output_thing);
+						dotcppfile.push_back(current_indent + output_s + " >>" + " " + output_thing);
 					}
 				}
 			}
@@ -974,9 +974,10 @@ int main()
     parse("#include<iostream>");
     parse("int main()");
     parse("{");
-    parse("output <- \"Hello World\"");
+    parse("output <- \"Hello World\";");
     parse("int x = 42;");
     parse("input -> xyz;");
+    parse("output <- xyz;");
     parse("}");
     	parse("funcdef_trailing function_name(a: int) -> float");
 	parse("make_instance int c;");
