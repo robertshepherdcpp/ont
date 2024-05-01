@@ -150,6 +150,10 @@ auto is_keyword(std::string s)
     {
         return true;
     }
+    else if(s == "pfor")
+    {
+        return true;
+    }
 		// FIXME: Add more key words and then the base case for something that isn't a keyword
 		// like a compiler error message.
 
@@ -371,6 +375,15 @@ auto parse(std::string str_)
 				}
 			}
 		} // if possible_keyword == "use"
+        else if(possible_keyword == "pfor")
+        { // looks like pfor i : vector
+            std::string current_string_o = amount_str(indent);
+            current_string_o += "for(auto";
+            current_string_o += str_.substr(6, str_.size());
+            current_string_o += ")";
+
+            dotcppfile.push_back(current_string_o);
+        } // else if possible_keyword == "pfor"
 		else if (possible_keyword == "comment")
 		{
 			std::string current_string_o = amount_str(indent);
@@ -1021,12 +1034,13 @@ int main()
 	parse("funcdefmore function_name(first: bool, second: int, third: char, fourth: bool)");
 	parse("brace {");
 	parse("brace }");
+        parse("pfor i : vector");
+	parse("brace {");
+	parse("brace }");
 	// parse("funcdefmore function_name(var_int: int, var_char: char)");
 
-	int j = 1;
 	for (auto _ : dotcppfile)
 	{
-        std::cout << _ << "\n";
-
+            std::cout << _ << "\n";
 	}
 }
