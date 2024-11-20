@@ -12,9 +12,9 @@ With objects, i have chosen to get rid of `class` and `struct` and replace them 
 object a_class
 brace {
 a_class() {} // constructor
-brace }
+brace };
 ```
-and the generated code will be:                                                                                         COMPILES: FALSE
+and the generated code will be:                                                                                         COMPILES: TRUE
 ```C++
 struct a_class
 {
