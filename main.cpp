@@ -150,7 +150,7 @@ auto is_keyword(std::string s)
     {
         return true;
     }
-    else if(s == "pfor")
+    else if(s == "loop")
     {
         return true;
     }
@@ -375,15 +375,6 @@ auto parse(std::string str_)
 				}
 			}
 		} // if possible_keyword == "use"
-        else if(possible_keyword == "pfor")
-        { // looks like pfor i : vector
-            std::string current_string_o = amount_str(indent);
-            current_string_o += "for(auto";
-            current_string_o += str_.substr(6, str_.size());
-            current_string_o += ")";
-
-            dotcppfile.push_back(current_string_o);
-        } // else if possible_keyword == "pfor"
 		else if (possible_keyword == "comment")
 		{
 			std::string current_string_o = amount_str(indent);
@@ -507,6 +498,34 @@ auto parse(std::string str_)
 			}
 			dotcppfile.push_back(current_string_o);
 		} // else if(possible_keyword == "funcdef")
+        else if (possible_keyword == "loop")
+        {
+            // the syntax will be loop i to n
+            //                    loop i to n
+            std::string waiting{amount_str(indent)};
+            waiting.append("for(int ");
+            std::string rest = str_.substr(5, str_.size());
+            // find the integer i.
+            for(int i = 0; i < rest.size(); i++) {
+                if(i < rest.size() - 2 && rest[i] == 't' && rest[i+1] == 'o' && i >= 2)
+                {
+                    // so this is index of the position.
+                    // so we know where to is. well just assume its an integer
+                    std::string variable_name{rest.substr(0, i - 1)};
+                    waiting.append(variable_name);
+                    waiting.append(" = 0; ");
+                    waiting.append(variable_name);
+                    waiting.append(" < ");
+                    // here we need to find the variable name of n
+                    waiting.append(rest.substr(i + 3, rest.size()));
+                    waiting.append("; ");
+                    waiting.append(variable_name);
+                    waiting.append("++)");
+                    
+                }
+            }
+            dotcppfile.push_back(waiting);
+        }
 		else if (possible_keyword == "funcdef_trailing")
 		{
 		std::string waiting{amount_str(indent)};
@@ -992,7 +1011,7 @@ int main()
     parse("input -> xyz;");
     parse("output <- xyz;");
     parse("}");
-    	parse("funcdef_trailing function_name(a: int) -> float");
+    parse("funcdef_trailing function_name(a: int) -> float");
 	parse("make_instance int c;");
 	parse("pattern_match int is double;");
 	parse("use ~inputoutput~");
@@ -1034,13 +1053,15 @@ int main()
 	parse("funcdefmore function_name(first: bool, second: int, third: char, fourth: bool)");
 	parse("brace {");
 	parse("brace }");
-        parse("pfor i : vector");
-	parse("brace {");
-	parse("brace }");
+    parse("loop 5 to 10");
+    parse("brace {");
+    parse("brace }");
 	// parse("funcdefmore function_name(var_int: int, var_char: char)");
 
+	int j = 1;
 	for (auto _ : dotcppfile)
 	{
-            std::cout << _ << "\n";
+        std::cout << _ << "\n";
+
 	}
 }
