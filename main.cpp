@@ -1053,7 +1053,7 @@ int main()
 	parse("funcdefmore function_name(first: bool, second: int, third: char, fourth: bool)");
 	parse("brace {");
 	parse("brace }");
-    parse("loop 5 to 10");
+    parse("loop n to 10");
     parse("brace {");
     parse("brace }");
 	// parse("funcdefmore function_name(var_int: int, var_char: char)");
